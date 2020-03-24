@@ -1,0 +1,36 @@
+int seg[4 * N];
+void build(int node , int s , int e)
+{
+    if(s == e)
+    {
+        seg[node] = a[s];
+        return;
+    }
+    int mid = s + e >> 1;
+    build(node << 1 , s , mid);
+    build(node << 1 | 1 , mid + 1 , e);
+    seg[node] = max(seg[node << 1] , seg[node << 1 | 1]);
+}
+void update(int node , int s , int e , int i , int val)
+{
+    if(s == e)
+    {
+        seg[node] = val;
+        return;
+    }
+    int mid = s + e >> 1;
+    if(i <= mid)
+        update(node << 1 , s , mid , i);
+    else
+        update(node << 1 | 1 , mid + 1 , e , i);
+    seg[node] = max(seg[node << 1] , seg[node << 1 | 1]);
+}
+int query(int node , int s , int e , int l , int r)
+{
+    if(s > r || e < l)
+        return 0;
+    if(l <= s && e <= r)
+        return seg[node];
+    int mid = s + e >> 1;
+    return max(query(node << 1 , s , mid , l , r) , query(node << 1 | 1 , mid + 1 , e , l , r));
+}
