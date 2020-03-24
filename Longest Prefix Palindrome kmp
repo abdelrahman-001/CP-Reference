@@ -1,0 +1,17 @@
+int fail(string t)
+{
+   string a = t;
+   reverse(a.begin() , a.end());
+   a = t + "?" + a;
+   int n = a.size();
+   int f[n + 5] = {} , len = 0;
+   for(int i = 1;i < n;i++)
+   {
+       while(len && a[i] != a[len])
+           len = f[len - 1];
+       if(a[i] == a[len])
+           len++;
+       f[i] = len;
+   }
+   return len;
+}
