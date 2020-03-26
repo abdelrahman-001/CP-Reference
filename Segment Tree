@@ -20,9 +20,9 @@ void update(int node , int s , int e , int i , int val)
     }
     int mid = s + e >> 1;
     if(i <= mid)
-        update(node << 1 , s , mid , i);
+        update(node << 1 , s , mid , i , val);
     else
-        update(node << 1 | 1 , mid + 1 , e , i);
+        update(node << 1 | 1 , mid + 1 , e , i , val);
     seg[node] = max(seg[node << 1] , seg[node << 1 | 1]);
 }
 int query(int node , int s , int e , int l , int r)
