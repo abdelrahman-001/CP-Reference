@@ -1,0 +1,4 @@
+- do it as recursive with the same transition but from end to begin.
+- do the same base case.
+- answer will be found in the same variables as you call the solve function from main.
+- in case you do memory reduction do not forget to initialize the old dp before start building it again.
