@@ -1,0 +1,34 @@
+const int lg = 20;
+int lvl[N] , sp[N][lg];
+void dfs(int node , int par)
+{
+    lvl[node] = lvl[par] + 1;
+    sp[node][0] = par;
+    for(int i = 1;i < lg;i++)
+    {
+        int tmp = sp[node][i - 1];
+        sp[node][i] = sp[tmp][i - 1];
+    }
+    for(auto &i : g[node])
+        if(i != par)
+            dfs(i , node);
+}
+int get_kth(int u , int k)
+{
+    for(int i = 0;i < lg;i++)
+        if((1 << i) & k)
+            u = sp[u][i];
+    return u;
+}
+int get_lca(int u , int v)
+{
+    if(lvl[v] < lvl[u])
+        swap(u , v);
+    v = get_kth(v , lvl[v] - lvl[u]);
+    if(u == v)
+        return u;
+    for(int i = lg - 1;i >= 0;i--)
+        if(sp[u][i] != sp[v][i])
+            u = sp[u][i] , v = sp[v][i];
+    return sp[u][0];
+}
