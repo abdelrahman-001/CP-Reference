@@ -1,3 +1,4 @@
+// the number of integrs between 1 to n which are coprime to n
 ll phi(ll x)
 {
 	ll e = 1;
