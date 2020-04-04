@@ -1,0 +1,80 @@
+#pragma GCC optimize ("O3")
+#include <bits/stdc++.h>
+#define abdelrahman010 ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+typedef long long ll;
+using namespace std;
+const int N = 1e5 + 5;
+int t , n , m;
+int par[N] , sz[N];
+queue<int> mids[N];
+struct edge {
+    int u , v , ind;
+};
+struct query {
+    int u , v , ind , st , en , ans;
+};
+int find(int u) {
+    return (u == par[u]) ? u : par[u] = find(par[u]);
+}
+void join(int u , int v) {
+    u = find(par[u]) , v = find(par[v]);
+    if(u == v)
+        return;
+    if(sz[u] < sz[v])
+        swap(u , v);
+    sz[u] += sz[v];
+    par[v] = u;
+}
+bool connected(int u , int v) {
+    return find(par[u]) == find(par[v]);
+}
+int main() {
+    abdelrahman010
+    cin >> t;
+    while(t--) {
+        cin >> n >> m;
+        vector<edge> e;
+        vector<query> q;
+        for (int i = 0;i < m;i++) {
+            int u , v , c;
+            cin >> c >> u >> v;
+            if (c == 1)
+                e.push_back({u , v , i + 1});
+            else
+                q.push_back({u , v , i + 1 , -1 , -1 , -1});
+        }
+        for (int i = 0;i < q.size();i++)
+            q[i].st = 0, q[i].en = (int)e.size() - 1;
+        bool yes = true;
+        while(yes) {
+            for(int i = 1;i <= n;i++)
+                sz[i] = 1 , par[i] = i;
+            for(int i = 0;i < q.size();i++) {
+                if(q[i].st > q[i].en)
+                    continue;
+                int mid = q[i].st + q[i].en >> 1;
+                mids[mid].push(i);
+            }
+            yes = false;
+            for(int i = 0;i < e.size();i++) {
+                join(e[i].u , e[i].v);
+                while(mids[i].size()) {
+                    int cur = mids[i].front();
+                    mids[i].pop();
+                    if (connected(q[cur].u, q[cur].v))
+                        q[cur].ans = e[i].ind, q[cur].en = i - 1;
+                    else
+                        q[cur].st = i + 1;
+                    yes = true;
+                }
+            }
+        }
+        for(int i = 0;i < q.size();i++) {
+            if(q[i].ans > q[i].ind)
+                q[i].ans = -1;
+            cout << q[i].ans << '\n';
+        }
+    }
+    return 0;
+}
+problem -> https://codeforces.com/gym/100814/problem/C
