@@ -1,0 +1,60 @@
+#pragma GCC optimize ("O3")
+#include <bits/stdc++.h>
+#define abdelrahman010 ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+typedef long long ll;
+using namespace std;
+const int N = 1e5 + 5;
+int n , m , a[N] , id;
+int sz[N] , ans[N];
+map<string , int> com;
+map<int , set<int>> *mp[N];
+vector<int> g[N];
+vector<pair<int , int>> q[N];
+void dfs(int node , int lvl) {
+    sz[node] = 1;
+    int big = -1;
+    for(auto &i : g[node]) {
+        dfs(i , lvl + 1);
+        sz[node] += sz[i];
+        if(big == -1 || sz[big] < sz[i])
+            big = i;
+    }
+    if(big == -1)
+        mp[node] = new map<int , set<int>>();
+    else
+        mp[node] = mp[big];
+    (*mp[node])[lvl].insert(a[node]);
+    for(auto &i : g[node]) {
+        if(i == big)
+            continue;
+        for(auto &it : *mp[i])
+            (*mp[node])[it.first].insert(it.second.begin() , it.second.end());
+        (*mp[i]).clear();
+    }
+    for(auto &i : q[node])
+        ans[i.second] = (*mp[node])[i.first + lvl].size();
+}
+int main() {
+    abdelrahman010
+    cin >> n;
+    for(int i = 1;i <= n;i++) {
+        int r;
+        string s;
+        cin >> s >> r;
+        if(!com.count(s))
+            com[s] = id++;
+        a[i] = com[s];
+        g[r].push_back(i);
+    }
+    cin >> m;
+    for(int i = 0;i < m;i++) {
+        int v , k;
+        cin >> v >> k;
+        q[v].push_back({k , i});
+    }
+    dfs(0 , 0);
+    for(int i = 0;i < m;i++)
+        cout << ans[i] << '\n';
+    return 0;
+}
+problem -> https://codeforces.com/contest/246/problem/E
