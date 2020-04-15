@@ -1,6 +1,5 @@
 int fact[N] , inv[N];
-int fp(int x , int y)
-{
+int fp(int x , int y) {
    if(!y)
        return 1;
    int res = fp(x , y / 2);
@@ -9,16 +8,13 @@ int fp(int x , int y)
        res = (1ll * res * x) % mod;
    return res;
 }
-void pre()
-{
+void pre() {
    fact[0] = inv[0] = 1;
-   for(int i = 1;i < N;i++)
-   {
+   for(int i = 1;i < N;i++) {
        fact[i] = (1ll * fact[i - 1] * i) % mod;
        inv[i] = fp(fact[i] , mod - 2);
    }
 }
-int ncr(int n , int r)
-{
+int ncr(int n , int r) {
    return (1ll * (1ll * fact[n] * inv[r]) % mod * inv[n - r]) % mod;
 }
