@@ -1,0 +1,33 @@
+ll dij(int s , int t) {
+    priority_queue<pair<ll , int>> q;
+    int par[n + 5] = {};
+    ll c[n + 5];
+    for(int i = 1;i <= n;i++)
+        c[i] = 1e18;
+    par[s] = -1 , c[s] = 0;
+    q.push({0 , s});
+    while(!q.empty()) {
+        auto cur = q.top();
+        q.pop();
+        if(cur.second == t)
+            break;
+        for(auto &i : g[cur.second]) {
+            if(-cur.first + i.second < c[i.first]) {
+                c[i.first] = -cur.first + i.second;
+                par[i.first] = cur.second;
+                q.push({-c[i.first] , i.first});
+            }
+        }
+    }
+    if(c[t] == 1e18)
+        return c[t];
+    vector<int> v;
+    int cur = t;
+    while(~par[cur]) {
+        v.push_back(cur);
+        cur = par[cur];
+    }
+    v.push_back(s);
+    reverse(v.begin() , v.end());
+    return c[t];
+}
