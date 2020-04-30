@@ -29,3 +29,11 @@ int query(int node , int s , int e , int l , int r) {
     int mid = s + e >> 1;
     return max(query(node << 1 , s , mid , l , r) , query(node << 1 | 1 , mid + 1 , e , l , r));
 }
+void propagate(int node , int s , int e) {
+    seg[node] += (e - s + 1) * lazy[node];
+    if(s != e) {
+        lazy[node << 1] += lazy[node];
+        lazy[node << 1 | 1] += lazy[node];
+    }
+    lazy[node] = 0;
+}
