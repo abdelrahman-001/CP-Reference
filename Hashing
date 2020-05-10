@@ -4,8 +4,7 @@ int pw1[N] , inv1[N];
 int pw2[N] , inv2[N];
 int pref1[N] , pref2[N];
 string s;
-int fp(int x , int y)
-{
+int fp(int x , int y) {
    if(!y)
        return 1;
    int res = fp(x , y / 2);
@@ -14,25 +13,21 @@ int fp(int x , int y)
        res = (1ll * res * x) % mod;
    return res;
 }
-void pre()
-{
+void pre() {
    pw1[0] = inv1[0] = 1;
    pw2[0] = inv2[0] = 1;
    int minv1 = fp(b1 , mod - 2);
    int minv2 = fp(b2 , mod - 2);
-   for(int i = 1;i < N;i++)
-   {
+   for(int i = 1;i < N;i++) {
        pw1[i] = (1ll * b1 * pw1[i - 1]) % mod;
        pw2[i] = (1ll * b2 * pw2[i - 1]) % mod;
        inv1[i] = (1ll * minv1 * inv1[i - 1]) % mod;
        inv2[i] = (1ll * minv2 * inv2[i - 1]) % mod;
    }
 }
-pair<int , int> get(int l , int r)
-{
+pair<int , int> get(int l , int r) {
     int ans1 = pref1[r] , ans2 = pref2[r];
-    if(l)
-    {
+    if(l) {
         ans1 = (ans1 - pref1[l - 1] + mod) % mod;
         ans2 = (ans2 - pref2[l - 1] + mod) % mod;
     }
@@ -43,24 +38,20 @@ pair<int , int> get(int l , int r)
 
 pre();
 int n = s.size();
-for(int i = 0;i < n;i++)
-{
+for(int i = 0;i < n;i++) {
    int c = s[i] - 'a' + 1;
    pref1[i] = (1ll * c * pw1[i]) % mod;
    pref2[i] = (1ll * c * pw2[i]) % mod;
-   if(i)
-   {
+   if(i) {
        pref1[i] = (pref1[i] + pref1[i - 1]) % mod;
        pref2[i] = (pref2[i] + pref2[i - 1]) % mod;
    }
 }
-for(int i = n - 1;i >= 0;i--)
-{
+for(int i = n - 1;i >= 0;i--) {
    int c = s[i] - 'a' + 1;
    suf1[i] = (1ll * c * pw1[n - i - 1]) % mod;
    suf2[i] = (1ll * c * pw2[n - i - 1]) % mod;
-   if(i != n - 1)
-   {
+   if(i != n - 1) {
        suf1[i] = (suf1[i] + suf1[i + 1]) % mod;
        suf2[i] = (suf2[i] + suf2[i + 1]) % mod;
    }
