@@ -9,6 +9,14 @@ void build(int node , int s , int e) {
     build(node << 1 | 1 , mid + 1 , e);
     seg[node] = max(seg[node << 1] , seg[node << 1 | 1]);
 }
+void propagate(int node , int s , int e) {
+    seg[node] += (e - s + 1) * lazy[node];
+    if(s != e) {
+        lazy[node << 1] += lazy[node];
+        lazy[node << 1 | 1] += lazy[node];
+    }
+    lazy[node] = 0;
+}
 void update(int node , int s , int e , int i , int val) {
     if(s == e) {
         seg[node] = val;
@@ -28,12 +36,4 @@ int query(int node , int s , int e , int l , int r) {
         return seg[node];
     int mid = s + e >> 1;
     return max(query(node << 1 , s , mid , l , r) , query(node << 1 | 1 , mid + 1 , e , l , r));
-}
-void propagate(int node , int s , int e) {
-    seg[node] += (e - s + 1) * lazy[node];
-    if(s != e) {
-        lazy[node << 1] += lazy[node];
-        lazy[node << 1 | 1] += lazy[node];
-    }
-    lazy[node] = 0;
 }
