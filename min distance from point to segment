@@ -1,0 +1,43 @@
+#pragma GCC optimize ("O3")
+#include <bits/stdc++.h>
+#define abdelrahman010 ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+#define point complex<long double>
+typedef long long ll;
+using namespace std;
+const int N = 1e5 + 5;
+long double dot(point a , point b) {
+    return (conj(a) * b).real();
+}
+long double len(point a , point b) {
+    long double x = a.real() - b.real();
+    long double y = a.imag() - b.imag();
+    return x * x + y * y;
+}
+pair<long double , point> get(point a , point b , point c) {
+    point v1 = b - a , v2 = c - a;
+    long double d1 = dot(v1 , v2);
+    long double d2 = dot(v1 , v1);
+    if(d1 <= 0)
+        return {len(a , c) , a};
+    if(d2 <= d1)
+        return {len(b , c) , b};
+    point d = a + v1 * (d1 / d2);
+    return {len(d , c) , d};
+}
+int main() {
+    abdelrahman010
+    long double x , y;
+    cin >> x >> y;
+    point m(x , y);
+    cin >> x >> y;
+    point p0(x , y);
+    cin >> x >> y;
+    point p1(x , y);
+    if(p0.real() > p1.real())
+        swap(p0 , p1);
+    auto c = get(p0 , p1 , m);
+    pos = c.second;
+    cout << fixed << setprecision(4) << pos.real() << '\n' << pos.imag() << '\n';
+   
+    return 0;
+}
