@@ -1,0 +1,58 @@
+#pragma GCC optimize ("O3")
+#include <bits/stdc++.h>
+#define abdelrahman010 ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+#define point complex<int>
+typedef long long ll;
+using namespace std;
+const int N = 1e5 + 5;
+int t;
+struct line {
+    int a , b , c;
+};
+line get(point a , point b) {
+    int x = a.imag() - b.imag();
+    int y = b.real() - a.real();
+    int z = a.real() * b.imag() - b.real() * a.imag();
+    return {x , y , z};
+}
+line sim(line l) {
+    int gcd = __gcd(l.a , __gcd(l.b , l.c));
+    l.a /= gcd , l.b /= gcd , l.c /= gcd;
+    if(l.a < 0)
+        l.a *= -1 , l.b *= -1 , l.c *= -1;
+    else if(l.a == 0 && l.b < 0)
+        l.b *= -1 , l.c *= -1;
+    else if(l.a == 0 && l.b == 0 && l.c < 0)
+        l.c *= -1;
+    return l;
+}
+int main() {
+    abdelrahman010
+    cin >> t;
+    cout << "INTERSECTING LINES OUTPUT\n";
+    while(t--) {
+        point a[4];
+        for(int i = 0;i < 4;i++) {
+            int x , y;
+            cin >> x >> y;
+            a[i] = {x , y};
+        }
+        line l1 = get(a[0] , a[1]);
+        line l2 = get(a[2] , a[3]);
+        l1 = sim(l1) , l2 = sim(l2);
+        long double p = (long double)l2.a * l1.b - (long double)l1.a * l2.b;
+        if(l1.a == l2.a && l1.b == l2.b && l1.c == l2.c) {
+            cout << "LINE\n";
+            continue;
+        }
+        if(p == 0) {
+            cout << "NONE\n";
+            continue;
+        }
+        long double x = ((long double)l1.c * l2.b - (long double)l1.b * l2.c) / p;
+        long double y = ((long double)l1.a * l2.c - (long double)l1.c * l2.a) / p;
+        cout << fixed << setprecision(2) << "POINT " << x << " " << y << '\n';
+    }
+    cout << "END OF OUTPUT\n";
+    return 0;
+}
