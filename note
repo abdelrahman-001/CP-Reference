@@ -1,0 +1,40 @@
+#pragma GCC optimize ("O3")
+#include <bits/stdc++.h>
+#define point complex<long double>
+typedef long long ll;
+using namespace std;
+const int N = 1e3 + 5;
+int n , t;
+long double cross(point a , point b) {
+    return (conj(a) * b).imag();
+}
+long double len(point a , point b) {
+    long double x = a.real() - b.real();
+    long double y = a.imag() - b.imag();
+    cout << x * x << " " << y * y << endl;
+    return sqrt(x * x + y * y);
+}
+point findc(point a , point b , point c) {
+    point m1 = (a + b) / (long double)2 , m2 = (c + b) / (long double)2;
+    point v1 = b - a , v2 = b - c;
+    point pv1 = {v1.imag() , -v1.real()} , pv2 = {v2.imag() , -v2.real()};
+    point e1 = m1 + pv1 , e2 = m2 + pv2;
+    long double d1 = cross(m1 - e1 , e2 - m2) , d2 = cross(m1 - m2 , e2 - m2);
+    return m1 + (e1 - m1) * (d2 / d1);
+}
+int main() {
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+    while(cin >> n && n) {
+        point a[3];
+        for(int i = 0;i < 3;i++) {
+            long double x , y;
+            cin >> x >> y;
+            a[i] = {x , y};
+        }
+        point c = findc(a[0] , a[1] , a[2]);
+        long double r = len(a[1] , c);
+        cout << "Polygon " << ++t << ": ";
+        cout << fixed << setprecision(3) << 4 * r * r << '\n';
+    }
+    return 0;
+}
