@@ -1,0 +1,5 @@
+void rotate(point &a , point b , long double ang) {
+    point x = b - a;
+    x *= exp(point(0 , ang * acos(-1) / 180));
+    a = x + b;
+}
