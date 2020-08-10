@@ -1,0 +1,11 @@
+long double cross(point a , point b) {
+    return (conj(a) * b).imag();
+}
+point findc(point a , point b , point c) {
+    point m1 = (a + b) / (long double)2 , m2 = (c + b) / (long double)2;
+    point v1 = b - a , v2 = b - c;
+    point pv1 = {v1.imag() , -v1.real()} , pv2 = {v2.imag() , -v2.real()};
+    point e1 = m1 + pv1 , e2 = m2 + pv2;
+    long double d1 = cross(m1 - e1 , e2 - m2) , d2 = cross(m1 - m2 , e2 - m2);
+    return m1 + (e1 - m1) * (d2 / d1);
+}
