@@ -1,0 +1,3 @@
+long double get_theta(long double a , long double b , long double c) {
+    return (b * b + c * c - a * a) / (2 * b * c);
+}
