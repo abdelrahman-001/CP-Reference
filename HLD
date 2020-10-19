@@ -1,12 +1,7 @@
-#pragma GCC optimize ("O3")
-#include <bits/stdc++.h>
-using namespace std;
-typedef long long ll;
 const int N = 1e5 + 5;
 const int lg = 20;
-int t , n , sz[N];
-vector<pair<int , int>> edges;
-vector<pair<int , int>> g[N];
+int n , q , sz[N];
+vector<int> g[N];
 int lvl[N] , sp[N][lg];
 void dfs(int node , int par) {
     lvl[node] = lvl[par] + 1;
@@ -17,10 +12,10 @@ void dfs(int node , int par) {
     }
     sz[node] = 1;
     for(auto &i : g[node]) {
-        if(i.first == par)
+        if(i == par)
             continue;
-        dfs(i.first , node);
-        sz[node] += sz[i.first];
+        dfs(i , node);
+        sz[node] += sz[i];
     }
 }
 int get_kth(int u , int k) {
@@ -40,34 +35,23 @@ int get_lca(int u , int v) {
             u = sp[u][i] , v = sp[v][i];
     return sp[u][0];
 }
-int chainID , ind , head[N] , node_chain[N] , pos[N] , a[N];
-void HLD(int node , int par , int cost) {
+int chainID , ind , head[N] , node_chain[N] , pos[N];
+void HLD(int node , int par) {
     if(head[chainID] == -1)
         head[chainID] = node;
     node_chain[node] = chainID;
-    pos[node] = ind , a[ind++] = cost;
-    pair<int , int> heavy = {-1 , 0};
-    int mx = 0;
+    pos[node] = ind++;
+    int mx = 0 , heavy = -1;
     for(auto &i : g[node])
-        if(i.first != par && sz[i.first] > mx)
-            mx = sz[i.first] , heavy = i;
-    if(heavy.first != -1)
-        HLD(heavy.first , node , heavy.second);
+        if(i != par && sz[i] > mx)
+            mx = sz[i] , heavy = i;
+    if(heavy != -1)
+        HLD(heavy , node);
     for(auto &i : g[node])
-        if(i.first != par && i != heavy)
-            chainID++ , HLD(i.first , node , i.second);
+        if(i != par && i != heavy)
+            chainID++ , HLD(i , node);
 }
 int seg[4 * N];
-void build(int node , int s , int e) {
-    if(s == e) {
-        seg[node] = a[s];
-        return;
-    }
-    int mid = s + e >> 1;
-    build(node << 1 , s , mid);
-    build(node << 1 | 1 , mid + 1 , e);
-    seg[node] = max(seg[node << 1] , seg[node << 1 | 1]);
-}
 int query_mx(int node , int s , int e , int l , int r) {
     if(s > r || e < l)
         return 0;
@@ -78,14 +62,14 @@ int query_mx(int node , int s , int e , int l , int r) {
 }
 int query(int u , int v) {
     int ans = 0;
-    while(u != v) {
+    while(1) {
         if(lvl[u] < lvl[v])
             swap(u , v);
         int u_chain = node_chain[u] , v_chain = node_chain[v];
         if(u_chain == v_chain) {
             if(pos[u] > pos[v])
                 swap(u , v);
-            int val = query_mx(1 , 0 , n - 1 , pos[u] + 1 , pos[v]);
+            int val = query_mx(1 , 0 , n - 1 , pos[u] , pos[v]);
             ans = max(ans , val);
             break;
         }
@@ -101,7 +85,7 @@ int get(int u , int v) {
 }
 void update(int node , int s , int e , int i , int val) {
     if(s == e) {
-        seg[node] = val;
+        seg[node] += val;
         return;
     }
     int mid = s + e >> 1;
@@ -110,47 +94,4 @@ void update(int node , int s , int e , int i , int val) {
     else
         update(node << 1 | 1 , mid + 1 , e , i , val);
     seg[node] = max(seg[node << 1] , seg[node << 1 | 1]);
-}
-void init() {
-    edges.clear();
-    chainID = ind = 0;
-    for(int i = 0;i <= n;i++) {
-        g[i].clear();
-        sz[i] = 0 , head[i] = -1;
-    }
-    for(int i = 0;i <= 4 * n;i++)
-        seg[i] = 0;
-}
-int main() {
-    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
-    cin >> t;
-    while(t--) {
-        cin >> n;
-        init();
-        for(int i = 1;i < n;i++) {
-            int u , v , c;
-            cin >> u >> v >> c;
-            g[u].push_back({v , c});
-            g[v].push_back({u , c});
-            edges.push_back({u , v});
-        }
-        dfs(1 , 1);
-        HLD(1 , 1 , 0);
-        build(1 , 0 , n - 1);
-        string s;
-        cin >> s;
-        while(s != "DONE") {
-            int x , y;
-            cin >> x >> y;
-            if(s[0] == 'Q')
-                cout << get(x , y) << '\n';
-            else {
-                int u = edges[x - 1].first , v = edges[x - 1].second;
-                int node = (lvl[u] > lvl[v]) ? u : v;
-                update(1 , 0 , n - 1 , pos[node] , y);
-            }
-            cin >> s;
-        }
-    }
-    return 0;
 }
