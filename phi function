@@ -13,3 +13,18 @@ int phi(int n) {
         p *= (n - 1);
     return p;
 }
+
+
+int phi(int n) {
+    int p = n;
+    for(int i = 2;i * i<= n;i++) {
+        if(n % i == 0) {
+            while(n % i == 0)
+                n /= i;
+            p -= p / i;
+        }
+    }
+    if(n > 1)
+        p -= p / n;
+    return p;
+}
