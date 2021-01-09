@@ -1,0 +1,36 @@
+
+ll eGCD(ll a, ll b, ll &x0, ll &y0) {
+    if(b == 0) {
+        x0 = 1, y0 = 0;
+        return a;
+    }
+    ll x, y;
+    ll g = eGCD(b, a % b, x, y);
+    x0 = y, y0 = x - (a / b) * y;
+    return g;
+}
+ll LDE(ll a, ll b, ll c, ll &x, ll &y) {
+    ll g = eGCD(abs(a), abs(b), x, y);
+    if(c % g)
+        return -1;
+    x *= c / g, y *= c / g;
+    if(a < 0)
+        x *= -1;
+    if(y < 0)
+        y *= -1;
+    return g;
+}
+ll CRT(vector<ll> rem, vector<ll> mods) {
+    ll r1 = rem[0], m1 = mods[0];
+    for(int i = 1;i < rem.size();i++) {
+        ll r2 = rem[i], m2 = mods[i];
+        ll x0, y0;
+        ll g = LDE(m1, -m2, r2 - r1, x0, y0);
+        if(g == -1)
+            return -1;
+        r1 += x0 * m1;
+        m1 = m1 / g * m2;
+        r1 = (r1 % m1 + m1) % m1;
+    }
+    return r1;
+}
