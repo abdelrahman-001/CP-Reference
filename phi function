@@ -28,3 +28,15 @@ int phi(int n) {
         p -= p / n;
     return p;
 }
+
+phi from 1 to n
+
+int phi[N];
+void gen() {
+    for(int i = 1;i < N;i++)
+        phi[i] = i;
+    for(int i = 2;i * i < N;i++)
+        if(phi[i] == i)
+            for(int j = i + i;j < N;j += i)
+                phi[j] -= phi[j] / i;
+}
