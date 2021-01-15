@@ -1,11 +1,11 @@
 int sz[N];
 bool done[N];
 vector<int> g[N] , p[N];
-int dfs(int node , int par) {
+int updatesz(int node , int par) {
     sz[node] = 1;
     for(auto &i : g[node])
         if(i != par && !done[i])
-            sz[node] += dfs(i , node);
+            sz[node] += updatesz(i , node);
     return sz[node];
 }
 int get_centroid(int node , int par , int sum) {
@@ -18,7 +18,7 @@ int get_centroid(int node , int par , int sum) {
     return get_centroid(c , node , sum);
 }
 void decompose(int node , int par , int lvl) {
-    int sum = dfs(node , par);
+    int sum = updatesz(node , par);
     int cen = get_centroid(node , par , sum);
     done[cen] = true;
     p[lvl].push_back(cen);
