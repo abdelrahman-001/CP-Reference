@@ -1,0 +1,32 @@
+const int mod = 1e9 + 7;
+struct Matrix {
+    vector<vector<int>> mat;
+    int n, m;
+    Matrix(vector<vector<int>> val): mat(val), n(val.size()), m(val[0].size()){}
+    static Matrix identify_matrix(int n) {
+        vector<vector<int>> iden(n, vector<int>(n, 0));
+        for(int i = 0;i < n;i++)
+            iden[i][i] = 1;
+        return iden;
+    }
+    Matrix operator *(const Matrix &other) const {
+        vector<vector<int>> res (n, vector<int>(other.m, 0));
+        for(int i = 0;i < n;i++)
+            for(int j = 0;j < other.m;j++)
+                for(int k = 0;k < m;k++)
+                    res[i][j] = (res[i][j] + (1ll * mat[i][k] * other.mat[k][j]) % mod) % mod;
+        return res;
+    }
+    inline bool is_square() const {
+        return n == m;
+    }
+};
+Matrix fp(Matrix x, ll y) {
+    if(y == 0)
+        return Matrix::identify_matrix(x.n);
+    Matrix res = fp(x, y >> 1);
+    res = res * res;
+    if(y & 1)
+        res = res * x;
+    return res;
+}
