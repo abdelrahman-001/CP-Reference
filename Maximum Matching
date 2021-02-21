@@ -6,7 +6,7 @@ bool match(int node) {
     vis[node] = true;
     for(auto &i : g[node])
         if(l[i] == -1 || match(l[i])) {
-            l[i] = node , l[node] = i;
+            l[i] = node , r[node] = i;
             return true;
         }
     return false;
