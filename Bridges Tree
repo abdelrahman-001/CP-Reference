@@ -1,0 +1,71 @@
+#pragma GCC optimize ("O3")
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+const int N = 1e5 + 5;
+int t, n, m, d[N], low[N], T, cnt, id[N], mx, c;
+bool vis[N];
+stack<int> nodes;
+vector<int> g[N], tree[N];
+void dfs(int node, int par) {
+    d[node] = low[node] = ++T;
+    vis[node] = true;
+    int c = 0;
+    nodes.push(node);
+    for(auto &i : g[node]) {
+        if(i == par)
+            continue;
+        if(!vis[i]) {
+            c++;
+            dfs(i, node);
+            low[node] = min(low[node], low[i]);
+        } else
+            low[node] = min(low[node], d[i]);
+    }
+    if(low[node] == d[node]) {
+        cnt++;
+        while(1) {
+            int cur = nodes.top();
+            id[cur] = cnt;
+            nodes.pop();
+            if(cur == node)
+                break;
+        }
+    }
+}
+void dfs2(int node, int par, int lvl) {
+    if(lvl > mx)
+        mx = lvl, c = node;
+    for(auto &i : tree[node])
+        if(i != par)
+            dfs2(i, node, lvl + 1);
+}
+int main() {
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+    cin >> t;
+    while(t--) {
+        cin >> n >> m;
+        for(int i = 1;i <= n;i++)
+            g[i].clear(), tree[i].clear();
+        memset(vis, 0, sizeof vis);
+        T = 0, cnt = 0;
+        for(int i = 0;i < m;i++) {
+            int u, v;
+            cin >> u >> v;
+            g[u].push_back(v);
+            g[v].push_back(u);
+        }
+        dfs(1, 1);
+        for(int i = 1;i <= n;i++) {
+            for(auto &u : g[i])
+                if(id[i] != id[u])
+                    tree[id[i]].push_back(id[u]);
+        }
+        mx = -1;
+        dfs2(1, 1, 0);
+        mx = -1;
+        dfs2(c, c, 0);
+        cout << cnt - 1 - mx << '\n';
+    }
+    return 0;
+}
