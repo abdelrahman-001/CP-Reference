@@ -1,0 +1,43 @@
+int nodes, comp[N];
+vector<int> g[N], gt[N];
+vector<int> order, res;
+bool used[N];
+void add_edge(int u, int v) {
+    g[u].push_back(v);
+    gt[v].push_back(u);
+}
+void add_disjunction(int u, int v) {
+    add_edge(u ^ 1, v);
+    add_edge(v ^ 1, u);
+}
+void dfs1(int node) {
+    if(used[node])
+        return;
+    used[node] = true;
+    for(auto &i : g[node])
+        dfs1(i);
+    order.push_back(node);
+}
+void dfs2(int node, int c) {
+    if(comp[node])
+        return;
+    comp[node] = c;
+    for(auto &i : gt[node])
+        dfs2(i, c);
+}
+bool solve_2SAT() {
+    for(int i = 0;i < nodes * 2;i++)
+        dfs1(i);
+    reverse(order.begin(), order.end());
+    int c = 0;
+    for(auto &u : order)
+        if(comp[u] == 0)
+            c++, dfs2(u, c);
+    for(int i = 0;i < nodes * 2;i += 2) {
+        if(comp[i] == comp[i ^ 1])
+            return false;
+        if(comp[i] > comp[i ^ 1])
+            res.push_back(i);
+    }
+    return true;
+}
