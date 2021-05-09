@@ -19,6 +19,7 @@ node *update(node *cur, int s, int e, int i, int val) {
     ret->sum = ret->left->sum + ret->right->sum;
     return ret;
 }
+// get last r for which the range [l, r] have at most k ones
 int query(node *cur, int s, int e, int k) {
     if(!cur)
         cur = new node();
