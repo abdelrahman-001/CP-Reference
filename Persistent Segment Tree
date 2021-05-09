@@ -1,0 +1,31 @@
+struct node {
+    node *left, *right;
+    int sum;
+    node(): left(NULL), right(NULL), sum(0) {}
+    node(node *left, node *right, int sum): left(left), right(right), sum(sum) {}
+};
+node *seg[N];
+node *update(node *cur, int s, int e, int i, int val) {
+    if(!cur)
+        cur = new node();
+    if(i < s || e < i)
+        return cur;
+    if(s == e)
+        return new node(0, 0, val);
+    int mid = s + e >> 1;
+    node *ret = new node();
+    ret->left = update(cur->left, s, mid, i, val);
+    ret->right = update(cur->right, mid + 1, e, i, val);
+    ret->sum = ret->left->sum + ret->right->sum;
+    return ret;
+}
+int query(node *cur, int s, int e, int k) {
+    if(!cur)
+        cur = new node();
+    if(s == e)
+        return s;
+    int mid = s + e >> 1;
+    if(cur->left->sum > k)
+        return query(cur->left, s, mid, k);
+    return query(cur->right, mid + 1, e, k - cur->left->sum);
+}
