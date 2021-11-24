@@ -1,0 +1,92 @@
+#pragma GCC optimize ("O3")
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+const int N = 1e5 + 5;
+int n, q, sz[N], ans[N];
+ll cost[N];
+bool done[N];
+vector<ll> dist, v;
+vector<int> nodes;
+vector<pair<int, int>> g[N];
+vector<pair<ll, int>> queries[N];
+void dfs(int node, int par, ll c, bool f) {
+    if(f) {
+        nodes.push_back(node);
+        v.push_back(c);
+    } else {
+        dist.push_back(c);
+        cost[node] = c;
+    }
+    for(auto &i : g[node])
+        if(i.first != par && !done[i.first])
+            dfs(i.first, node, c + i.second, f);
+}
+void solve(int node) {
+    dist.clear();
+    dfs(node, node, 0, 0);
+    sort(dist.begin(), dist.end());
+    for(auto &i : queries[node])
+        ans[i.second] += upper_bound(dist.begin(), dist.end(), i.first) - dist.begin() - 1;
+    for(auto &i : g[node]) {
+        if(done[i.first])
+            continue;
+        nodes.clear();
+        v.clear();
+        dfs(i.first, node, i.second, 1);
+        sort(v.begin(), v.end());
+        for(auto &u : nodes) {
+            for(auto &j : queries[u]) {
+                if(cost[u] > j.first)
+                    continue;
+                ans[j.second] += upper_bound(dist.begin(), dist.end(), j.first - cost[u]) - dist.begin();
+                ans[j.second] -= upper_bound(v.begin(), v.end(), j.first - cost[u]) - v.begin();
+            }
+        }
+    }
+}
+int updatesz(int node , int par) {
+    sz[node] = 1;
+    for(auto &i : g[node])
+        if(i.first != par && !done[i.first])
+            sz[node] += updatesz(i.first, node);
+    return sz[node];
+}
+int get_centroid(int node , int par , int sum) {
+    int mx = 0, c;
+    for(auto &i : g[node])
+        if(i.first != par && !done[i.first] && sz[i.first] > mx)
+            mx = sz[i.first], c = i.first;
+    if(mx <= sum / 2)
+        return node;
+    return get_centroid(c, node, sum);
+}
+void decompose(int node , int par) {
+    int sum = updatesz(node, par);
+    int cen = get_centroid(node, par , sum);
+    solve(cen);
+    done[cen] = true;
+    for(auto &i : g[cen])
+        if(!done[i.first])
+            decompose(i.first, node);
+}
+int main() {
+    ios_base::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+    cin >> n >> q;
+    for(int i = 1;i < n;i++) {
+        int u, v, w;
+        cin >> u >> v >> w;
+        g[u].push_back({v, w});
+        g[v].push_back({u, w});
+    }
+    for(int i = 0;i < q;i++) {
+        int v;
+        ll l;
+        cin >> v >> l;
+        queries[v].push_back({l, i});
+    }
+    decompose(1, 1);
+    for(int i = 0;i < q;i++)
+        cout << ans[i] + 1 << '\n';
+    return 0;
+}
