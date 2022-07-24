@@ -1,0 +1,59 @@
+const int N = 1e5 + 5;
+const int A = 26;
+int trie[N][A], id = 1;
+bool mark[N];
+int go[N][A];
+int sz[N];
+int f[N];
+vector<int> occ[N];
+bool vis[N];
+void dfs(int node) {
+    if(vis[node] || node == 0)
+        return;
+    vis[node] = true;
+    dfs(f[node]);
+    for(auto i : occ[f[node]])
+        occ[node].push_back(i);
+}
+void ACA() {
+    queue<int> q;
+    for(int i = 0;i < A;i++) {
+        if(trie[0][i]) {
+            f[trie[0][i]] = 0;
+            q.push(trie[0][i]);
+        }
+        go[0][i] = trie[0][i];
+    }
+    while(!q.empty()) {
+        int cur = q.front();
+        q.pop();
+        for(int i = 0;i < A;i++) {
+            if(trie[cur][i]) {
+                int g = f[cur];
+                while(g && !trie[g][i])
+                    g = f[g];
+                if(trie[g][i])
+                    g = trie[g][i];
+                f[trie[cur][i]] = g;
+                q.push(trie[cur][i]);
+            }
+            if(trie[cur][i])
+                go[cur][i] = trie[cur][i];
+            else
+                go[cur][i] = go[f[cur]][i];
+        }
+    }
+    for(int i = 1;i < id;i++)
+        dfs(i);
+}
+void add(string s, int i) {
+    int v = 0;
+    for(auto i : s) {
+        if(!trie[v][i - 'a']) {
+            trie[v][i - 'a'] = id++;
+        }
+        v = trie[v][i - 'a'];
+    }
+    mark[v] = true;
+    occ[v].push_back(i);
+}
