@@ -29,16 +29,10 @@ void ACA() {
         q.pop();
         for(int i = 0;i < A;i++) {
             if(trie[cur][i]) {
-                int g = f[cur];
-                while(g && !trie[g][i])
-                    g = f[g];
-                if(trie[g][i])
-                    g = trie[g][i];
-                f[trie[cur][i]] = g;
+                go[cur][i] = trie[cur][i];
+                f[trie[cur][i]] = go[f[cur]][i];
                 q.push(trie[cur][i]);
             }
-            if(trie[cur][i])
-                go[cur][i] = trie[cur][i];
             else
                 go[cur][i] = go[f[cur]][i];
         }
