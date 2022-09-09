@@ -1,0 +1,22 @@
+int d[N], low[N], T;
+bool vis[N], AP[N];
+vector<int> g[N];
+void dfsAP(int node, int par) {
+    d[node] = low[node] = ++T;
+    vis[node] = true;
+    int c = 0;
+    for(auto &i : g[node]) {
+        if(i == par)
+            continue;
+        if(!vis[i]) {
+            c++;
+            dfsAP(i, node);
+            low[node] = min(low[node], low[i]);
+            if(low[i] >= d[node])
+                AP[node] = true;
+        } else
+            low[node] = min(low[node], d[i]);
+    }
+    if(node == 1)
+        AP[node] = (c > 1);
+}
