@@ -20,7 +20,7 @@ void dfs(int node, int par) {
             c++;
             dfs(i, node);
             low[node] = min(low[node], low[i]);
-        } else
+        } else if(vis2[i])
             low[node] = min(low[node], d[i]);
     }
     if(low[node] == d[node]) {
