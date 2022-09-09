@@ -4,12 +4,13 @@ using namespace std;
 typedef long long ll;
 const int N = 1e5 + 5;
 int t, n, m, d[N], low[N], T, cnt, id[N], mx, c;
-bool vis[N];
+bool vis[N], vis2[N];
 stack<int> nodes;
 vector<int> g[N], tree[N];
 void dfs(int node, int par) {
     d[node] = low[node] = ++T;
     vis[node] = true;
+    vis2[node] = true;
     int c = 0;
     nodes.push(node);
     for(auto &i : g[node]) {
@@ -27,6 +28,7 @@ void dfs(int node, int par) {
         while(1) {
             int cur = nodes.top();
             id[cur] = cnt;
+            vis2[cur] = false;
             nodes.pop();
             if(cur == node)
                 break;
