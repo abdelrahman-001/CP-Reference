@@ -1,3 +1,4 @@
+////////////////////O(N ^ 2)
 int m[N][N], w[N][N];
 int mPartner[N], wPartner[N];
 int mRnk[N][N], wRnk[N][N];
