@@ -1,0 +1,30 @@
+int m[N][N], w[N][N];
+int mPartner[N], wPartner[N];
+int mRnk[N][N], wRnk[N][N];
+void stableMarriage() {
+    memset(mPartner, -1, sizeof mPartner);
+    memset(wPartner, -1, sizeof wPartner);
+    queue<int> unMatched;
+    for(int i = 1;i <= n;i++)
+        unMatched.push(i);
+    while(!unMatched.empty()) {
+        int curM = unMatched.front();
+        unMatched.pop();
+        for(int i = 1;i <= n;i++) {
+            int curW = m[curM][i];
+            if(wPartner[curW] == -1) {
+                wPartner[curW] = curM;
+                mPartner[curM] = curW;
+                break;
+            } else {
+                int otherM = wPartner[curW];
+                if(wRnk[curW][curM] < wRnk[curW][otherM]) {
+                    wPartner[curW] = curM;
+                    mPartner[curM] = curW;
+                    mPartner[otherM] = -1;
+                    unMatched.push(otherM);
+                }
+            }
+        }
+    }
+}
