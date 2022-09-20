@@ -1,6 +1,7 @@
 const int N = 1e5 + 5;
 const int A = 26;
 int trie[N][A], id = 1;
+int len[N], lvl[N], lst[N];
 bool mark[N];
 int go[N][A];
 int sz[N];
@@ -36,6 +37,10 @@ void ACA() {
             else
                 go[cur][i] = go[f[cur]][i];
         }
+        if(len[f[cur]])
+            lst[cur] = f[cur];
+        else
+            lst[cur] = lst[f[cur]];
     }
     for(int i = 1;i < id;i++)
         dfs(i);
@@ -44,10 +49,11 @@ void add(string s, int i) {
     int v = 0;
     for(auto i : s) {
         if(!trie[v][i - 'a']) {
+            lvl[id] = lvl[v] + 1;
             trie[v][i - 'a'] = id++;
         }
         v = trie[v][i - 'a'];
     }
+    len[v] = lvl[v];
     mark[v] = true;
-    occ[v].push_back(i);
 }
