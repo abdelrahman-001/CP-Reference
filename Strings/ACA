@@ -45,7 +45,7 @@ void ACA() {
     for(int i = 1;i < id;i++)
         dfs(i);
 }
-void add(string s, int i) {
+void add(string s, int j) {
     int v = 0;
     for(auto i : s) {
         if(!trie[v][i - 'a']) {
