@@ -3,6 +3,7 @@ struct Node {
     ll key;
     int pri = mrand(), sz = 1;
     ll lz = 0;
+    bool rev = false;
     int idx;
     array<Node*, 2> c = {NULL, NULL};
     Node(ll key, int idx) : key(key), idx(idx) {}
@@ -15,13 +16,22 @@ Node* calc(Node* t) {
     return t;
 }
 void prop(Node* cur) {
-    if(!cur || !cur->lz)
+    if(!cur || !cur->lz || !cur->rev) // rev or lz
         return;
     cur->key += cur->lz;
+    //if rev
+    swap(cur->c[0], cur->c[1]);
+    //if rev
+    if(cur->c[0])
+        cur->c[0]->rev ^= 1;
+    if(cur->c[1])
+        cur->c[1]->rev ^= 1;
+    // if lz
     if(cur->c[0])
         cur->c[0]->lz += cur->lz;
     if(cur->c[1])
         cur->c[1]->lz += cur->lz;
+    cur->rev = false;
     cur->lz = 0;
 }
 array<Node*, 2> split(Node* t, int k) {
@@ -64,5 +74,12 @@ Node* ins(Node* root, ll val, int idx, int pos) {
     root = merge(splitted[0], new Node(val, idx));
     return merge(root, splitted[1]);
 }
-
+void Rev(Node *&root, int l, int r) {
+    //0-based
+    auto t1 = split(root, r + 1);
+    auto t2 = split(t1[0], l);
+    t2[1]->rev ^= 1;
+    t1[0] = merge(t2[0], t2[1]);
+    root = merge(t1[0], t1[1]);
+}
 //Node *root = NULL
